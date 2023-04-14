@@ -28,6 +28,7 @@ export const login = createAsyncThunk('auth/login', async ({ username, password 
 		}
 	} catch (err) {
 		if (err instanceof Error) {
+			toast.error("Something went wrong!")
 			return thunkAPI.rejectWithValue(err);
 		}
 
@@ -66,6 +67,31 @@ export const register = createAsyncThunk('auth/register', async ({ username, pas
 	}
 });
 
+export const getTouranment = createAsyncThunk('tournament', async (_, thunkAPI) => {
+	try {
+		const response = await fetch('http://127.0.0.1:8000/tournament', {
+			method: 'GET',
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		const data = await response.json();
+
+		if (response.status === 200) {
+			return data;
+
+		} else {
+			return thunkAPI.rejectWithValue(data);
+		}
+	} catch (err) {
+		if (err instanceof Error) {
+			return thunkAPI.rejectWithValue(err);
+		}
+
+	}
+});
+
 interface CounterState {
 	isAuthenticated: boolean,
 	user: null | any,
@@ -81,7 +107,6 @@ const initialState = {
 	loading: false,
 	registered: false,
 } as CounterState
-
 
 const userSlice = createSlice({
 	name: 'users',
@@ -151,6 +176,41 @@ const userSlice = createSlice({
 		// .addCase(logout.rejected, state => {
 		// 	state.loading = false;
 		// });
+	},
+})
+
+interface Tourna {
+	loading: boolean,
+	tournaments: {
+		name: string,
+		photo_img: string
+	}[]
+}
+
+const TournaState = {
+	loading: false,
+	tournaments: [],
+} as Tourna
+
+export const TournSlice = createSlice({
+	name: 'Tournament',
+	initialState: TournaState,
+	reducers: {
+
+	},
+	extraReducers(builder) {
+		builder
+			.addCase(getTouranment.pending, state => {
+				state.loading = true;
+			})
+			.addCase(getTouranment.fulfilled, (state, action) => {
+				state.loading = false;
+				state.tournaments = action.payload;
+				console.log(action.payload)
+			})
+			.addCase(getTouranment.rejected, state => {
+				state.loading = false;
+			})
 	},
 })
 
