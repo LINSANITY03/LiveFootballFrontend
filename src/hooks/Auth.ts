@@ -92,6 +92,33 @@ export const getTouranment = createAsyncThunk('tournament', async (_, thunkAPI) 
 	}
 });
 
+export const getTeams = createAsyncThunk('teams', async (tournId : string, thunkAPI) => {
+	
+	try {
+		const response = await fetch(`http://127.0.0.1:8000/tournament/${tournId}`, {
+			method: 'GET',
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		const data = await response.json();
+
+		if (response.status === 200) {
+			return data;
+
+		} else {
+			return thunkAPI.rejectWithValue(data);
+		}
+	} catch (err) {
+		if (err instanceof Error) {
+			return thunkAPI.rejectWithValue(err);
+		}
+
+	}
+});
+
+
 interface CounterState {
 	isAuthenticated: boolean,
 	user: null | any,
@@ -177,20 +204,33 @@ const userSlice = createSlice({
 		// 	state.loading = false;
 		// });
 	},
-})
+});
+
+interface TeamModel {
+	id: number 
+	name: string,
+	photo_img: string
+}
 
 interface Tourna {
 	loading: boolean,
-	tournaments: {
-		name: string,
-		photo_img: string
-	}[]
+	tournaments: TeamModel[]
 }
 
 const TournaState = {
 	loading: false,
 	tournaments: [],
 } as Tourna
+
+interface PerTeam {
+	loading: boolean,
+	teams: TeamModel[]
+}
+
+const TeamState = {
+	loading: false,
+	teams: [],
+} as PerTeam
 
 export const TournSlice = createSlice({
 	name: 'Tournament',
@@ -206,13 +246,32 @@ export const TournSlice = createSlice({
 			.addCase(getTouranment.fulfilled, (state, action) => {
 				state.loading = false;
 				state.tournaments = action.payload;
-				console.log(action.payload)
 			})
 			.addCase(getTouranment.rejected, state => {
 				state.loading = false;
 			})
 	},
-})
+});
+
+export const TeamsSlice = createSlice({
+	name: 'Teams',
+	initialState: TeamState,
+	reducers: {
+	},
+	extraReducers(builder) {
+		builder
+			.addCase(getTeams.pending, state => {
+				state.loading = true;
+			})
+			.addCase(getTeams.fulfilled, (state, action) => {
+				state.loading = false;
+				state.teams = action.payload;
+			})
+			.addCase(getTeams.rejected, state => {
+				state.loading = false;
+			})
+	},
+});
 
 export const { resetRegistered, logoutUser } = userSlice.actions
 export default userSlice.reducer

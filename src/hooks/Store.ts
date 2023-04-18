@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import userReducer, { TournSlice } from "./Auth";
+import userReducer, { TournSlice, TeamsSlice } from "./Auth";
 
 export const store = configureStore({
     reducer: {
         user: userReducer,
         tourn: TournSlice.reducer,
+        teams: TeamsSlice.reducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

@@ -9,9 +9,10 @@ import UserLogin from "@/pages/client/register/Login";
 import SignUp from "@/pages/client/register/SignUp";
 import Undirected from "@/pages/Undirected/Undirected";
 import Dashboard from "@/pages/client/Dashboard/Index";
-import Tournament from "@/pages/client/Tournament/Index"
+import Tournament from "@/pages/client/Tournament/Index";
 
 import { store } from "@/hooks/Store";
+import { ValidateUser } from "@/hooks/ParamsValidation"
 
 function App() {
 
@@ -44,6 +45,10 @@ function App() {
             path="/tournament"
             element={<Tournament />} />
 
+          <Route
+            index={true}
+            path="/tournament/:id"
+            element={<ValidateUser />} />
 
         </Routes>
       </Router>

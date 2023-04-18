@@ -1,7 +1,7 @@
 import Navbar from '@/Components/Navbar'
 import Body from './Body'
 import { useEffect } from 'react'
-import { useAppSelector, useAppDispatch } from "@/hooks/hook";
+import { useAppDispatch } from "@/hooks/hook";
 import { getTouranment } from '@/hooks/Auth'
 
 type Props = {}
